@@ -13,13 +13,15 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
+
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
 
-    @Autowired
+
     public OrderController(OrderRepository orderRepository, WebClient.Builder webClientBuilder) {
         this.orderRepository = orderRepository;
         this.webClientBuilder = webClientBuilder;
@@ -30,13 +32,15 @@ public class OrderController {
         return webClientBuilder.build().get().uri("http://localhost:8083/products/" + order.getProductId()).retrieve()
                 .bodyToMono(ProductDTO.class).map(productDTO -> {
                     OrderResponseDTO responseDTO = new OrderResponseDTO();
-                    responseDTO.setOrderId(order.getId());
+
                     responseDTO.setQuantity(order.getQuantity());
                     responseDTO.setProductId(order.getProductId());
                     responseDTO.setProductName(productDTO.getName());
-                    responseDTO.setTotalPrice(productDTO.getPrice());
+                    responseDTO.setProductPrice(productDTO.getPrice());
                     responseDTO.setTotalPrice(order.getQuantity()* productDTO.getPrice());
                     orderRepository.save(order);
+                    responseDTO.setOrderId(order.getId());
+
                     return ResponseEntity.ok(responseDTO);
 
                 });
