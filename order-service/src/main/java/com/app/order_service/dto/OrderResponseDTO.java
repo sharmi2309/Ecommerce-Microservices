@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,7 +16,7 @@ public class OrderResponseDTO {
     private Long productId;
     private int quantity;
     private double totalPrice;
-
+    private LocalDateTime createdAt;
     //Product Details
     private String productName;
     private double productPrice;

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -40,6 +42,7 @@ public class OrderController {
                     responseDTO.setTotalPrice(order.getQuantity()* productDTO.getPrice());
                     orderRepository.save(order);
                     responseDTO.setOrderId(order.getId());
+                    responseDTO.setCreatedAt(LocalDateTime.now());
 
                     return ResponseEntity.ok(responseDTO);
 
