@@ -2,6 +2,7 @@ package com.app.product_service.controller;
 
 import com.app.product_service.models.Product;
 import com.app.product_service.repository.ProductRepository;
+import com.app.product_service.services.ProductService;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class ProductController {
     Logger log = LoggerFactory.getLogger(ProductController.class);
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ProductService productService;
+
     @PostMapping("/create")
     public Product addProduct(@RequestBody Product product){
         log.info("Product:{}", product);
@@ -53,6 +57,11 @@ public class ProductController {
                 .orElseGet(defaultProductSupplier);
         logProductConsumer.accept(product);
         return product;
+    }
+
+    @GetMapping("/processed")
+    public List<String> getProcessedProducts() {
+        return productService.getProcessedProducts();
     }
 }
 
