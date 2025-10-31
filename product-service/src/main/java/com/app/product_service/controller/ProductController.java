@@ -10,6 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import org.slf4j.Logger;
 @RestController
 @RequestMapping ("/products")
@@ -30,13 +34,25 @@ public class ProductController {
         log.debug("Debugging the Product List !!");
         return productRepository.findAll();
     }
+    private final Supplier<Product> defaultProductSupplier =
+            () -> {
+                Product defaultProduct = new Product();
+                defaultProduct.setId(0L);
+                defaultProduct.setName("Product is not Available");
+                defaultProduct.setPrice(0.0);
+                return defaultProduct;
+            };
+
+
+    private final Consumer<Product> logProductConsumer =
+            (product) -> System.out.println("Consumed Product: " + product);
+
     @GetMapping("/{id}")
-    public ResponseEntity<Product>getProductById(@PathVariable Long id) {
-        return new ResponseEntity<Product>(
-                productRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Data not Found")),
-                HttpStatus.OK
-        );
+    public Product getProductById(@PathVariable Long id) {
+        Product product = productRepository.findById(id)
+                .orElseGet(defaultProductSupplier);
+        logProductConsumer.accept(product);
+        return product;
     }
 }
 
